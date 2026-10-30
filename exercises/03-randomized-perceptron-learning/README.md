@@ -18,7 +18,7 @@ The teacher uses fixed weights
 
 ```math
 T_i=2^{N/2-i}\quad(1\leq i\leq N/2),\qquad
-T_i=-T_{i-N/2}\quad(N/2<i\leq N).
+T_i=-T_{i-N/2}\quad(N/2+1\leq i\leq N).
 ```
 
 Its field is $h_T=\sum_{i=1}^{N}T_iS_i=2(n_T-n_B)$. The target label is
@@ -173,7 +173,7 @@ python plot_noise_sweep.py
 
 Both scripts save outputs in `results/` next to the scripts, overwriting files with matching names. When plotting is enabled, `randomized_perceptron.py` creates and saves the applicable figures before a single `plt.show()` call displays them together. The variance-comparison script displays its figure after saving it. For unattended plotting, set the `MPLBACKEND` environment variable to `Agg`.
 
-The simulation uses `SEED = 123` and separate generators initialized with `SEED + 20` and `SEED + 40`. Reproducing the same samples requires retaining the simulation settings and the order of training-set sizes. Training is compiled with Numba; the first run includes compilation overhead.
+The simulation uses `SEED = 123` and separate generators initialized with `SEED + 20` and `SEED + 40`. Reproducing the same samples requires retaining the simulation settings and the order of training-set sizes. The first execution may take longer because Numba compiles the training function before running it.
 
 ## Attribution
 
