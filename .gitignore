@@ -1,0 +1,29 @@
+# Python environments (including the shared local workspace environments)
+.venv/
+.venv315/
+venv/
+
+# Python and Jupyter
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local/editor files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local or private datasets
+private_data/
+data/private/
+.env
+.env.*
+
+# Build/distribution
+build/
+dist/
+*.egg-info/
