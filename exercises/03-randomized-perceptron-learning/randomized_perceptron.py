@@ -15,7 +15,7 @@ RUNS = 1000
 SEED = 123
 TEST_SIZE = 1000
 
-NOISE_VARIANCE = 500
+NOISE_VARIANCE = 50
 MAX_EPOCHS = 100_000
 
 SAVE_EVERY = 25
@@ -24,7 +24,7 @@ PLOT_RESULTS = False
 P_N20 = np.array([1, 10, 20, 50, 100, 150, 200])
 P_N40 = np.array([1, 2, 20, 40, 100, 200, 300])
 
-RESULTS_DIR = Path(__file__).resolve().parent / "ex3_results"
+RESULTS_DIR = Path(__file__).resolve().parent / "results"
 
 
 # ==========================================

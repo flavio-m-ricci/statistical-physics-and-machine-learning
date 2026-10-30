@@ -1,50 +1,150 @@
-# Statistical Physics and Machine Learning — Course Exercises
 
-**Flavio Massimiliano Ricci**  
-MSc in Physics, *Statistical Physics and Complexity*, Sapienza University of Rome
+# Statistical Physics and Machine Learning
 
-This repository collects my solutions and computational exercises from the **Statistical Physics and Machine Learning** course. It is intended as a transparent record of coursework and independent learning, **not as a collection of original research publications**.
+**Computational Exercises | Sapienza University of Rome**
 
-## Contents
+**Author:** Flavio Massimiliano Ricci  
+**Programme:** MSc in Physics — Statistical Physics and Complexity  
+**Course:** Statistical Physics and Machine Learning  
+**Instructor:** Prof. Chiara Cammarota
 
-Exercises will be listed here as they are completed and reviewed.
+## Overview
 
-| Notebook | Topic | Main methods |
-| --- | --- | --- |
-| *To be added* | *To be added* | *To be added* |
+This repository contains my Python implementations, numerical experiments, and written reports for the *Statistical Physics and Machine Learning* course at Sapienza University of Rome.
 
-## Repository structure
+The projects explore fundamental concepts at the intersection of statistical physics and machine learning, including polynomial regression, model complexity, generalization, perceptron learning, stochastic optimization, and the statistical properties of learning algorithms.
 
-- `notebooks/` — one self-contained Jupyter notebook per exercise, named `01_short_topic.ipynb`, `02_short_topic.ipynb`, etc.
-- `templates/exercise_template.ipynb` — a blank template with sections for the problem, theory, implementation, results, and discussion.
-- `figures/` — figures worth keeping outside notebooks.
-- `requirements.txt` — initial Python dependencies (update when exercises are added).
+In addition to the prescribed coursework, selected exercises include supplementary computational investigations exploring the influence of model parameters on learning behavior.
 
-## Running the exercises
+## Exercises
 
-Activate your preferred Python environment, then run:
+### 01 — Polynomial Regression
+
+**Topics:** Supervised learning, polynomial fitting, model complexity, overfitting, generalization, and extrapolation.
+
+This exercise investigates polynomial regression on synthetic datasets generated from two different functions.
+
+Polynomial models of different degrees are fitted under varying conditions of training-set size and observation noise. Their predictions are compared with the underlying functions, with particular attention to the differences between interpolation and extrapolation beyond the training domain.
+
+**[View Exercise 01](exercises/01-polynomial-regression/README.md)**
+
+### 02 — Binary Comparison with a Perceptron
+
+**Topics:** Binary classification, linear classifiers, perceptron learning, weight optimization, and generalization error.
+
+This exercise studies a perceptron designed to compare two binary integers.
+
+An analytically constructed reference classifier is compared with randomly initialized and trained perceptrons. Numerical experiments investigate the evolution of synaptic weights, the reduction of training error, and the relationship between training-set size and generalization performance.
+
+**[View Exercise 02](exercises/02-binary-comparison-perceptron/README.md)**
+
+### 03 — Randomized Perceptron Learning
+
+**Topics:** Teacher–student learning, stochastic weight updates, statistical learning, generalization error, and finite-size scaling.
+
+This exercise investigates a teacher–student perceptron model in which learning updates are affected by multiplicative Gaussian noise.
+
+The prescribed investigation examines generalization error as a function of training-set size and input dimension, using repeated independent experiments to estimate mean errors and statistical uncertainties.
+
+#### Supplementary Investigation — Noise-Variance Dependence
+
+Beyond the original assignment, I extended the numerical study to investigate how the variance of the stochastic learning updates influences generalization performance.
+
+The original exercise specifies a noise variance of 50. The additional experiments consider several values, including the noise-free limit and variances above and below the prescribed value.
+
+These results allow a comparative investigation of stochastic learning dynamics and their dependence on noise intensity. The supplementary study is explicitly distinguished from the original coursework.
+
+**[View Exercise 03](exercises/03-randomized-perceptron-learning/README.md)**
+
+## Repository Structure
+
+```text
+statistical-physics-and-machine-learning/
+├── README.md
+├── requirements.txt
+├── .gitignore
+└── exercises/
+    ├── 01-polynomial-regression/
+    │   ├── README.md
+    │   ├── polynomial_regression.py
+    │   ├── report.pdf
+    │   ├── simulation_results.txt
+    │   └── figures/
+    │
+    ├── 02-binary-comparison-perceptron/
+    │   ├── README.md
+    │   ├── binary_comparison_perceptron.py
+    │   ├── report.pdf
+    │   └── figures/
+    │
+    └── 03-randomized-perceptron-learning/
+        ├── README.md
+        ├── randomized_perceptron.py
+        ├── plot_noise_sweep.py
+        ├── report.pdf
+        └── results/
+```
+
+Each exercise includes its own README describing the mathematical formulation, objectives, experimental methodology, and numerical analysis.
+
+## Technologies and Computational Methods
+
+The projects use Python and scientific computing libraries, primarily:
+
+- **NumPy:** Numerical linear algebra, random sampling, and array operations.
+- **Matplotlib:** Scientific visualization and statistical plots.
+- **Numba:** JIT compilation for computationally intensive simulations.
+- **tqdm:** Progress monitoring for repeated numerical experiments.
+
+The implementations involve supervised learning, iterative optimization, pseudorandom simulations, statistical error estimation, and numerical analysis.
+
+## Installation and Reproducibility
+
+### Requirements
+
+Install the required Python dependencies from the repository root:
 
 ```bash
 python -m pip install -r requirements.txt
-jupyter lab
 ```
 
-Open a notebook under `notebooks/`. The notebooks should use relative paths and fixed random seeds when appropriate, so that plots and results can be reproduced. If you use the shared virtual environment from your existing development workspace, you do not need to create another environment for this repository.
+### Running the Exercises
 
-## How exercises are documented
+Each exercise can be executed independently using its corresponding Python script.
 
-Each notebook should contain:
+**Exercise 01 — Polynomial Regression**
 
-1. **Problem and objective** — concise statement in my own words.
-2. **Theory** — the relevant equations, assumptions, and derivations.
-3. **Implementation** — readable Python code and comments.
-4. **Numerical experiments** — plots, comparisons, and checks.
-5. **Discussion** — interpretation, limitations, and possible extensions.
+```bash
+cd exercises/01-polynomial-regression
+python polynomial_regression.py
+```
 
-## Attribution and academic integrity
+**Exercise 02 — Binary Comparison Perceptron**
 
-The exercises are based on course material from Sapienza University of Rome. I will identify any external papers, starter code, datasets, or other sources in the relevant notebooks. Any modifications or extensions will be distinguished from the original material. Instructor slides, problem sheets, restricted datasets, and third-party source code will not be redistributed without the appropriate permission or licence.
+```bash
+cd exercises/02-binary-comparison-perceptron
+python binary_comparison_perceptron.py
+```
 
-## Status
+**Exercise 03 — Randomized Perceptron Learning**
 
-Work in progress. This repository will be expanded incrementally as exercises are completed.
+```bash
+cd exercises/03-randomized-perceptron-learning
+python randomized_perceptron.py
+```
+
+The third exercise uses configurable simulation parameters, including input dimension, number of repetitions, and noise variance. Some configurations are computationally intensive.
+
+Specific simulation settings, execution instructions, and descriptions of saved outputs are provided in the individual exercise READMEs.
+
+## Academic Attribution
+
+The exercises originate from the *Statistical Physics and Machine Learning* course taught by Prof. Chiara Cammarota at Sapienza University of Rome.
+
+The Python implementations, numerical investigations, generated figures, and accompanying reports are presented as my coursework.
+
+The supplementary numerical experiments are identified separately from the original assignments.
+
+The exercise descriptions are independently written and paraphrased for documentation purposes. The original instructor-provided assignment sheets are not redistributed.
+
+This repository documents educational and computational work and is not presented as a collection of original research publications.

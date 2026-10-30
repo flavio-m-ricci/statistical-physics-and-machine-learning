@@ -67,14 +67,14 @@ For every experiment:
 
 ## Files and execution
 
-- [`ex1.py`](ex1.py): Python implementation of the exercise.
+- [`polynomial_regression.py`](polynomial_regression.py): Python implementation of the exercise.
 - `training_*.png` and `test_*.png` (when present): visualizations generated for the different experiments.
-- [`Exc01_Ricci.pdf`](Exc01_Ricci.pdf): student report/solution, if retained in this directory.
+- [`report.pdf`](report.pdf): student report/solution, if retained in this directory.
 
 From this directory, with the repository's Python dependencies installed:
 
 ```bash
-python ex1.py
+python polynomial_regression.py
 ```
 
 **Reproducibility note:** The repository should document any random seeds, fitting routine and numerical-library versions used to regenerate its saved figures. The README describes the assignment; it does not assert that all experimental conclusions have been independently validated.

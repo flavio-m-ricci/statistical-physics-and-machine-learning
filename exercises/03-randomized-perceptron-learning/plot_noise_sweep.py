@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 def plot_variances(variances, n=40):
-    folder = Path(__file__).parent / "ex3_results"
+    folder = Path(__file__).parent / "results"
 
     for var in variances:
         name = "0.0" if var == 0 else str(var)

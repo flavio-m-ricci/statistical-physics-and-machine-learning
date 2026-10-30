@@ -1,12 +1,4 @@
-# Initial scientific Python stack. Keep only what actual notebooks use.
 numpy
-scipy
 matplotlib
-scikit-learn
 numba
-jupyterlab
-
-# Add torch separately only when a notebook requires PyTorch,
-# choosing a version compatible with the intended CPU/CUDA environment.
-# Add tqdm only when progress bars are used.
-# random and pathlib are part of the Python standard library.
+tqdm
