@@ -139,7 +139,7 @@ Alternatively, from this exercise directory:
 python polynomial_regression.py
 ```
 
-The script runs all six function/configuration combinations. It writes outputs next to the script, overwriting `simulation_results.txt` and figures with matching names. With an interactive Matplotlib backend, close each figure window to continue to the next plot. For unattended execution, select a noninteractive backend such as `Agg` using the `MPLBACKEND` environment variable.
+The script runs all six function/configuration combinations. It writes outputs next to the script, overwriting `simulation_results.txt` and figures with matching names. When run normally from a terminal with a graphical Matplotlib backend, the script pauses at `plt.show()` until the figure window is closed. For unattended execution, set the `MPLBACKEND` environment variable to `Agg` to save the figures without opening windows.
 
 ### Reproducibility
 
