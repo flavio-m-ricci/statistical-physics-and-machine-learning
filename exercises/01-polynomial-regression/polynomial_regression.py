@@ -60,7 +60,7 @@ def plot_data_and_fit(x, y, coeffs, char, message, title, x_max):
     plt.legend()
     plt.savefig(FIGURES_DIR / f"{title}.png", dpi=300, bbox_inches="tight")
     plt.show()
-
+    plt.close(fig)
 
 def simulation_single_func(char, n, sigma, x_max=1):
     x, y = simulate_data(char, n, sigma, x_max)
