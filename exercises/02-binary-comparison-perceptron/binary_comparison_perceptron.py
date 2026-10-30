@@ -96,6 +96,7 @@ def train_perceptron_single(
 
 
 def plot_couplings(J, error_rate, number_of_examples):
+    fig = plt.figure(figsize=(8, 5))
     plt.xlabel("i")
     plt.ylabel(r"$\mathrm{sign}(J_i^*J_i)\mathrm{log}_{2}(|J_i|)$")
     plt.title(
@@ -117,7 +118,7 @@ def plot_couplings(J, error_rate, number_of_examples):
         bbox_inches="tight",
     )
     plt.show()
-
+    plt.close(fig)
 
 # SIMULATION
 
