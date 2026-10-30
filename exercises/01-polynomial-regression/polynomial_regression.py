@@ -34,6 +34,7 @@ def fit_data(x, y, degree):
 
 
 def plot_data_and_fit(x, y, coeffs, char, message, title, x_max):
+    fig = plt.figure(figsize=(8, 5))
     plt.scatter(x, y, label="Data", color="black", s=2, alpha=1.0)
     x_plot = np.linspace(0, x_max, 500)
     plt.plot(
