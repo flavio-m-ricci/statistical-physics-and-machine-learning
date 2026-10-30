@@ -4,83 +4,180 @@
 **Instructor:** Prof. Chiara Cammarota  
 **Student implementation and analysis:** Flavio Massimiliano Ricci
 
-> **About this exercise.** This README independently restates the experimental specification from a course assignment. It is not a copy of the original instructor-provided document; the original PDF is not included.
+## Overview
 
-## Objective
+This exercise studies a teacher–student perceptron model with multiplicative Gaussian noise in the learning updates. The experiments examine how generalization error depends on training-set size and input dimension.
 
-Study the generalization of a *student* perceptron trained on labels supplied by a fixed *teacher* perceptron. The learning rule introduces a random multiplicative factor in each weight update. The experiment examines how test error depends on training-set size $P$ and input dimension $N$.
+The prescribed study uses noise variance 50. A supplementary investigation varies the noise intensity for $N=40$.
 
-## Teacher–student setup
+## Mathematical setup
 
-Each input $\boldsymbol S\in\{-1,+1\}^{N}$ encodes two binary integers of $N/2$ bits each (in its first and second halves). The target label specifies which integer is larger:
+Each input has $N$ components, sampled independently and uniformly from $-1$ and $+1$. Its first and second halves encode two unsigned integers of $N/2$ bits each, with the most significant bit first. Binary digits 0 and 1 are represented by $-1$ and $+1$.
 
-$$
-y=\begin{cases}
-+1,&n_T>n_B,\\
--1,&n_T\le n_B.
+The teacher uses fixed weights
+
+```math
+T_i=2^{N/2-i}\quad(1\leq i\leq N/2),\qquad
+T_i=-T_{i-N/2}\quad(N/2<i\leq N).
+```
+
+Its field is $h_T=\sum_{i=1}^{N}T_iS_i=2(n_T-n_B)$. The target label is
+
+```math
+y=
+\begin{cases}
++1,&h_T>0,\\
+-1,&h_T\leq0.
 \end{cases}
-$$
+```
 
-The teacher has fixed weights $\boldsymbol T=\boldsymbol J^*$ defined by
+Equal integers therefore receive label $-1$. The student uses the same threshold convention with its own weights, initially drawn from $\mathcal N(0,1)$.
 
-$$
-J_i^*=2^{N/2-i}\quad\left(1\le i\le\frac N2\right),\qquad
-J_i^*=-J_{i-N/2}^*\quad\left(\frac N2+1\le i\le N\right).
-$$
+### Randomized learning rule
 
-For an input $\boldsymbol S^\mu$, its target label is the teacher's classification,
+For each misclassified training example, every weight component is updated as
 
-$$
-y_T^\mu=\operatorname{sign}\!\left(\sum_{i=1}^{N}T_iS_i^\mu\right),
-$$
+```math
+J_i\leftarrow J_i+\frac{1}{\sqrt N}\,y_\mu S_i^\mu(1+r_i),
+\qquad r_i\sim\mathcal N(0,v).
+```
 
-with equal-number cases labeled $-1$, as required by the exercise. The student starts with weights drawn from $\mathcal N(0,1)$.
+The noise is drawn independently for each component at each update. The parameter $v$ is the **variance**; the implementation samples Gaussian noise with standard deviation $\sqrt v$.
 
-## Randomized update rule
+Training examples are visited in their original order on every pass. Training error is checked after each complete pass, and training stops when it reaches zero. Each model has a limit of 100,000 passes; reaching that limit aborts the simulation with an error rather than recording an unconverged model.
 
-When the student's prediction differs from the teacher's label, update each component as
+## Experimental design
 
-$$
-J_i(t+1)=J_i(t)+\frac{1}{\sqrt N}\,y_T^\mu S_i^\mu(1+r_i),
-$$
+The prescribed study uses $v=50$ and the following configurations:
 
-where the random factors satisfy
-
-$$
-r_i\sim\mathcal N(0,50).
-$$
-
-Here **50 is the variance**, not the standard deviation. Apply the rule over successive passes through the training examples, checking the training error after each pass, until the training error is zero.
-
-## Experiment design
-
-Run the full experiment at the following sizes:
-
-| Input dimension | Number of bits per integer | Training-set sizes $P$ |
+| Input dimension | Bits per integer | Training-set sizes $P$ |
 |---:|---:|---|
-| $N=20$ | 10 | 1, 10, 20, 50, 100, 150, 200 |
-| $N=40$ | 20 | 1, 2, 20, 40, 100, 200, 300 |
+| 20 | 10 | 1, 10, 20, 50, 100, 150, 200 |
+| 40 | 20 | 1, 2, 20, 40, 100, 200, 300 |
 
-For **each** combination of $N$ and $P$:
+For each dimension, the experiment is repeated 1,000 times. Each repetition generates fresh training samples and initial student weights for all seven training-set sizes. After training, test error is measured on 1,000 fresh examples.
 
-1. Generate $P$ training inputs and label them using the teacher.
-2. Initialize the student's weights with Gaussian random values.
-3. Train using the randomized misclassification update until the training error vanishes.
-4. Compute the fraction of misclassified examples on a **fresh test set of $P_{\mathrm{test}}=1000$** cases.
-5. Repeat the experiment **1,000 times** and estimate the mean test error and its error bar.
+Within a repetition, all seven students share the same test sample. A new test sample is generated for the next repetition. Errors at different training-set sizes are therefore correlated, while each reported mean and error bar is calculated across repetitions.
 
-## Plots and interpretation requested
+## Statistical estimates and outputs
 
-- Plot mean test error $\epsilon$ versus training-set size $P$ for $N=20$.
-- Repeat the study for $N=40$ and compare both curves on the same plot.
-- Explore a re-expression or rescaling of the horizontal variable that causes the two datasets to approximately collapse onto a common curve; discuss the choice and its limitations.
+Test error is the fraction of student predictions that differ from the teacher's labels. For $R$ completed repetitions, the script estimates
 
-The assignment does not prescribe a particular error-bar estimator or random seed. Those implementation details should be stated in the student analysis for reproducibility.
+```math
+\bar{\epsilon}=\frac{1}{R}\sum_{r=1}^{R}\epsilon_r,
+\qquad
+\mathrm{SEM}=\frac{s}{\sqrt R},
+```
+
+where $s$ is the sample standard deviation of the test errors, calculated using denominator $R-1$. The plotted error bars represent the **standard error of the mean**, not the spread of individual runs.
+
+The script accumulates statistics using Welford's algorithm and saves five columns:
+
+| Column | Meaning |
+|---|---|
+| `P` | Training-set size |
+| `mean_error` | Mean test error across completed repetitions |
+| `variance` | Sample variance of the test errors |
+| `std` | Sample standard deviation |
+| `sem` | Standard error of the mean |
+
+Results are saved in `results/N{N}_results_var{v}.txt`. The header records the dimension and number of completed repetitions.
+
+Checkpoints overwrite the corresponding result file every 25 completed repetitions and at completion. Restarting the script starts a new simulation; it does not resume from a checkpoint.
+
+## Main findings
+
+The saved experiments show three main patterns:
+
+- **Sample size:** mean test error decreases as the training sample grows, for both input dimensions.
+- **Dimension:** plotting against $\alpha=P/N$ brings the two curves approximately together over their common range.
+- **Noise intensity:** the supplementary $N=40$ results show that changing the update-noise variance affects generalization, with lower errors near the noise-free limit for the larger training sets.
+
+The [report](report.pdf) provides the detailed analysis of the prescribed exercise. Numerical tables and figures for both the prescribed and supplementary studies are available in [`results/`](results/).
+
+## Supplementary investigation: noise variance
+
+The additional study uses $N=40$ and the same training sizes, test-set size and repetition count, with variances **0.0, 0.01, 1, 5, 20, 50, 200 and 500**. The zero-variance case removes the random factor from the updates; training samples and initial weights remain random.
+
+The comparison is generated by [`plot_noise_sweep.py`](plot_noise_sweep.py), which reads the eight saved `N40_results_var*.txt` tables and plots mean test error against $P/N$, with SEM error bars. It does not run simulations.
+
+## Figures and data
+
+| Contents | File |
+|---|---|
+| Prescribed results, $N=20$ | [Numerical table](results/N20_results_var50.txt) |
+| Prescribed results, $N=40$ | [Numerical table](results/N40_results_var50.txt) |
+| Error versus $P$, $N=20$ | [Figure](results/error_N20_var50.png) |
+| Comparison of $N=20$ and $N=40$ | [Figure](results/error_comparison_var50.png) |
+| Comparison using $\alpha=P/N$ | [Figure](results/data_collapse_var50.png) |
+| Supplementary variance comparison, $N=40$ | [Figure](results/variance_comparison_N40.png) |
 
 ## Files and execution
 
-The Python implementation, student's written solution and generated results are stored within this exercise directory. Exact run commands and figure links should be added after checking the filenames and runtime requirements of the actual script; they are intentionally not guessed here.
+| Path | Contents |
+|---|---|
+| [`randomized_perceptron.py`](randomized_perceptron.py) | Simulation, statistical estimates, checkpoints and plotting of saved results |
+| [`plot_noise_sweep.py`](plot_noise_sweep.py) | Comparison of the saved $N=40$ variance results |
+| [`results/`](results/) | Numerical tables and figures |
+| [`report.pdf`](report.pdf) | Student report |
+
+From the repository root, install the dependencies and enter the exercise directory:
+
+```bash
+python -m pip install -r requirements.txt
+cd exercises/03-randomized-perceptron-learning
+```
+
+### Prescribed study and saved-result plots
+
+Set the switches in the configuration section of `randomized_perceptron.py` before running it:
+
+| Mode | `RUN_N20` | `RUN_N40` | `PLOT_RESULTS` |
+|---|---|---|---|
+| Current defaults | `False` | `True` | `False` |
+| Run both dimensions and generate figures | `True` | `True` | `True` |
+| Plot saved tables without rerunning simulations | `False` | `False` | `True` |
+
+Keep `NOISE_VARIANCE = 50` for the prescribed study, then run:
+
+```bash
+python randomized_perceptron.py
+```
+
+**With the current defaults, this command runs only the $N=40$ simulation and does not generate figures.** The default repetition count is `RUNS = 1000`, and `TEST_SIZE = 1000`.
+
+Plotting mode reads the saved tables for the selected variance. Both dimensions' tables are needed for the comparison and $P/N$ figures.
+
+### Reproducing the variance comparison
+
+To regenerate the supplementary numerical tables, start with these settings:
+
+```python
+RUN_N20 = False
+RUN_N40 = True
+PLOT_RESULTS = False
+NOISE_VARIANCE = 0.0
+```
+
+Run `python randomized_perceptron.py`, then repeat with `NOISE_VARIANCE` set to `0.01`, `1`, `5`, `20`, `50`, `200` and `500` in turn.
+
+Use these numeric forms exactly: filenames include the string representation of `NOISE_VARIANCE`. In particular, `0.0` produces the zero-noise filename expected by the plotting script.
+
+Once all eight tables exist, or to use those already supplied, run:
+
+```bash
+python plot_noise_sweep.py
+```
+
+### Plot display and reproducibility
+
+Both scripts save outputs in `results/` next to the scripts, overwriting files with matching names. When plotting is enabled, `randomized_perceptron.py` creates and saves the applicable figures before a single `plt.show()` call displays them together. The variance-comparison script displays its figure after saving it. For unattended plotting, set the `MPLBACKEND` environment variable to `Agg`.
+
+The simulation uses `SEED = 123` and separate generators initialized with `SEED + 20` and `SEED + 40`. Reproducing the same samples requires retaining the simulation settings and the order of training-set sizes. Training is compiled with Numba; the first run includes compilation overhead.
 
 ## Attribution
 
-Exercise topic and experimental settings: *Statistical Physics and Machine Learning*, Sapienza University of Rome, Prof. Chiara Cammarota. Description rewritten for an academic code portfolio; original course handout not redistributed.
+The exercise topic and experimental specifications originate from the *Statistical Physics and Machine Learning* course taught by Prof. Chiara Cammarota at Sapienza University of Rome.
+
+The noise-variance comparison extends the prescribed exercise. The Python code, numerical analysis and report are presented as student coursework. The original instructor-provided assignment sheet is not redistributed.
+
