@@ -14,31 +14,31 @@ The experiments examine how learning changes the weights and how training-set si
 
 Each input is a vector of $N=20$ components,
 
-$$
+```math
 \boldsymbol S=(S_1,\ldots,S_{20}),\qquad S_i\in\{-1,+1\}.
-$$
+```
 
 The first ten components encode the integer $n_T$, and the remaining ten encode $n_B$. Within each half, the most significant bit comes first. Binary digits 0 and 1 are represented by $-1$ and $+1$, respectively, so both integers range from 0 to 1023.
 
 The target label is
 
-$$
+```math
 y=
 \begin{cases}
 +1,&n_T>n_B,\\
 -1,&n_T\leq n_B.
 \end{cases}
-$$
+```
 
 For weights $\boldsymbol J$, the perceptron computes the field $h=\sum_{i=1}^{20}J_iS_i$ and predicts
 
-$$
+```math
 \widehat y=
 \begin{cases}
 +1,&h>0,\\
 -1,&h\leq0.
 \end{cases}
-$$
+```
 
 A zero field is therefore assigned label $-1$.
 
@@ -46,12 +46,12 @@ A zero field is therefore assigned label $-1$.
 
 The reference classifier uses
 
-$$
-J_i^*=2^{10-i}\quad(1\leq i\leq10),\qquad
-J_i^*=-J_{i-10}^*\quad(11\leq i\leq20).
-$$
+```math
+J_i^{\ast}=2^{10-i}\quad(1\leq i\leq10),\qquad
+J_i^{\ast}=-J_{i-10}^{\ast}\quad(11\leq i\leq20).
+```
 
-With this encoding, its field is $h^*=2(n_T-n_B)$. The prediction therefore implements the desired comparison, including label $-1$ for equal integers.
+With this encoding, its field is $h^{\ast}=2(n_T-n_B)$. The prediction therefore implements the desired comparison, including label $-1$ for equal integers.
 
 The implementation also provides an independent benchmark that decodes each half of the input into an integer and compares the two numbers directly.
 
@@ -70,9 +70,9 @@ All input bits are sampled independently and uniformly. Training labels and test
 
 For each misclassified training example, the weights are updated as
 
-$$
+```math
 J_i\leftarrow J_i+\frac{1}{\sqrt{20}}\,y_\mu S_i^\mu.
-$$
+```
 
 Correctly classified examples do not produce an update. Training examples are visited in their original order on every pass, without shuffling. The training error is evaluated after each complete pass, and training stops when it reaches zero.
 
@@ -89,10 +89,10 @@ The reference classifier is evaluated against direct integer comparison. The ran
 
 Weight plots show
 
-$$
-q_i=\mathrm{sign}(J_i^*J_i)\,\log_2|J_i|,
+```math
+q_i=\mathrm{sign}(J_i^{\ast}J_i)\,\log_2|J_i|,
 \qquad i=1,\ldots,20.
-$$
+```
 
 The two input halves are plotted in different colors. This logarithmic representation requires nonzero weights; the script applies the transform directly.
 
@@ -153,4 +153,3 @@ The script uses a single NumPy random generator initialized with `np.random.defa
 The exercise topic and experimental specifications originate from the *Statistical Physics and Machine Learning* course taught by Prof. Chiara Cammarota at Sapienza University of Rome.
 
 This README independently describes the assignment and the supplied implementation. The Python code, numerical analysis and report are presented as student coursework. The original instructor-provided assignment sheet is not redistributed.
-
