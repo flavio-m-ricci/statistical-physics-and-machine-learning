@@ -62,7 +62,7 @@ Test inputs are randomly sampled from the specified interval; they are not a reg
 For a nonempty subset $S$ of test inputs, the script evaluates
 
 $$
-\operatorname{MSE}_{\mathrm{test}}(S)
+\mathrm{MSE}_{\mathrm{test}}(S)
 =\frac{1}{|S|}\sum_{\mu\in S}
 \left[y_\mu-p_d(x_\mu)\right]^2
 $$
@@ -70,7 +70,7 @@ $$
 and
 
 $$
-\operatorname{MSE}_{\mathrm{true}}(S)
+\mathrm{MSE}_{\mathrm{true}}(S)
 =\frac{1}{|S|}\sum_{\mu\in S}
 \left[f(x_\mu)-p_d(x_\mu)\right]^2.
 $$
@@ -88,32 +88,19 @@ The output names are:
 
 The script plots training fits but does not report a numerical training-set MSE. All reported MSE values are evaluated on test inputs.
 
-## Results and interpretation
+## Main findings
 
-The following values are taken from [`simulation_results.txt`](simulation_results.txt) and rounded. They report `MSE_true_func` over the entire test interval, so they include extrapolation.
+The saved experiments show three main patterns:
 
-| Function | Training points | $\sigma$ | Degree 1 | Degree 3 | Degree 10 |
-|---|---:|---:|---:|---:|---:|
-| $f_A$ | 10 | 0 | $3.24\times10^{-33}$ | $2.33\times10^{-30}$ | $5.17\times10^{-14}$ |
-| $f_B$ | 10 | 0 | 340.143 | 226.623 | $1.96\times10^{-8}$ |
-| $f_A$ | 100 | 1 | 0.0324194 | 0.0635858 | 24,951.4 |
-| $f_B$ | 100 | 1 | 1,012.63 | 733.992 | 45,915.3 |
-| $f_A$ | 10,000 | 1 | $9.29\times10^{-5}$ | 0.00766063 | 1,303.21 |
-| $f_B$ | 10,000 | 1 | 691.179 | 503.979 | 4.00378 |
+- **Model complexity:** degree 1 matches the linear generating function, while degrees 1 and 3 cannot represent the nonlinear function exactly.
+- **Noise and sample size:** the degree-10 model is sensitive to noisy observations; increasing the training sample from 100 to 10,000 points substantially improves its predictions for the nonlinear function.
+- **Extrapolation:** small errors within the training interval do not guarantee accurate predictions beyond it, especially for high-degree fits.
 
-For the linear function, degree 1 matches the generating model and gives the lowest error in all three saved configurations. Higher degree does not guarantee better predictions: with noisy data, the degree-10 model is especially unstable outside the training interval.
-
-For the nonlinear function, degrees 1 and 3 cannot represent the generating polynomial exactly. The degree-10 model performs well in the noise-free sample, becomes highly sensitive to noise with 100 training points, and improves substantially with 10,000 points.
-
-The distinction between prediction inside the training interval and extrapolation is essential. For $f_A$ with 10,000 training points, the degree-10 model has an error against the true function of approximately **0.000960 inside** the interval but **10,024.7 outside** it. A small error inside the training interval therefore does not establish reliable extrapolation.
-
-These are results from one fixed-seed dataset per configuration, not averages over repeated experiments. The script does not estimate statistical error bars.
+The [report](report.pdf) presents the detailed results and discussion. Numerical MSE values are available in [`simulation_results.txt`](simulation_results.txt). Each configuration uses one random dataset per function; the script does not estimate statistical error bars.
 
 ### Numerical limitation: degree 10 with 10 observations
 
-A degree-10 polynomial has 11 coefficients. Fitting it to only 10 observations is an underdetermined problem: the observations do not uniquely identify all coefficients, even without noise.
-
-This configuration is retained as part of the exercise. `np.polyfit` emits a `RankWarning` for the supplied noise-free cases, and its numerical solution should not be interpreted as unique recovery of the generating polynomial. High powers in the polynomial basis also make numerical conditioning relevant, especially when interpreting extrapolation.
+A degree-10 polynomial has 11 coefficients, so fitting it to 10 observations is underdetermined. This prescribed configuration can produce a `RankWarning` from `np.polyfit`; the fitted polynomial should not be interpreted as uniquely determined by the observations. Numerical conditioning is also relevant when interpreting high-degree extrapolation.
 
 ## Figures
 
@@ -156,11 +143,7 @@ The script runs all six function/configuration combinations. It writes outputs n
 
 ### Reproducibility
 
-The script sets `np.random.seed(12345)` once before running the six simulations, in this order: $f_A$, then $f_B$, for training sizes 10, 100 and 10,000. Changing that order or running only part of the script changes the subsequent random samples.
-
-A verification run using **Python 3.13.7, NumPy 2.3.3 and Matplotlib 3.10.6** reproduced the saved numerical output exactly and generated 12 separate figures. These are verified environment versions; `requirements.txt` does not pin versions, and numerical or rendering differences may occur with other environments.
-
-The script is intended to be executed directly: importing it also launches the simulations and rewrites its outputs.
+The script sets `np.random.seed(12345)` once and runs $f_A$, then $f_B$, for training sizes 10, 100 and 10,000. Reproducing the same random samples requires preserving this execution order.
 
 ## Attribution
 
