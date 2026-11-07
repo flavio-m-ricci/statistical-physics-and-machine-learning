@@ -160,8 +160,6 @@ python -m pip install -r requirements.txt pandas
 python exercises/04-annealed-solution/annealed_solution.py
 ```
 
-The extra `pandas` package is needed by this exercise and is not currently listed in the repository's `requirements.txt`.
-
 Alternatively, from this exercise directory:
 
 ```bash
