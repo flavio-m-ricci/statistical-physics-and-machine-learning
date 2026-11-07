@@ -11,7 +11,7 @@
 
 This repository collects my Python implementations, numerical experiments and reports for the *Statistical Physics and Machine Learning* course at Sapienza University of Rome.
 
-The three exercises explore polynomial regression, model complexity, perceptron learning and generalization. Each exercise README presents the mathematical setup, experimental settings, execution instructions and a short summary of the findings. The accompanying reports provide the detailed analysis.
+The four exercises explore polynomial regression, model complexity, perceptron learning, generalization and the annealed approximation to perceptron learning. Each exercise README presents the mathematical setup, experimental settings, execution instructions and a short summary of the findings. The accompanying reports provide the detailed analysis.
 
 ## Exercises
 
@@ -41,6 +41,16 @@ A **supplementary investigation** varies the update-noise variance for dimension
 
 [Exercise README](exercises/03-randomized-perceptron-learning/README.md) · [Report](exercises/03-randomized-perceptron-learning/report.pdf)
 
+### 04 — Annealed Solution to Randomized Perceptron Learning
+
+The annealed approximation provides an implicit relation between the generalization error and the number of training examples per input dimension. The exercise studies this relation through a parametric curve and two fixed-point formulations with adjustable relaxation parameters.
+
+A systematic parameter sweep compares the convergence properties of the iterative methods. The selected configuration is then used to compute the theoretical generalization curve, which is compared with the numerical results from Exercise 03.
+
+**Topics:** Annealed approximation, fixed-point iteration, numerical convergence, relaxation methods and theoretical versus numerical generalization.
+
+[Exercise README](exercises/04-annealed-solution/README.md) · [Report](exercises/04-annealed-solution/report.pdf)
+
 ## Repository structure
 
 ```text
@@ -60,17 +70,24 @@ statistical-physics-and-machine-learning/
     │   ├── binary_comparison_perceptron.py
     │   ├── report.pdf
     │   └── figures/
-    └── 03-randomized-perceptron-learning/
+    ├── 03-randomized-perceptron-learning/
+    │   ├── README.md
+    │   ├── randomized_perceptron.py
+    │   ├── plot_noise_sweep.py
+    │   ├── report.pdf
+    │   └── results/
+    └── 04-annealed-solution/
         ├── README.md
-        ├── randomized_perceptron.py
-        ├── plot_noise_sweep.py
+        ├── annealed_solution.py
         ├── report.pdf
-        └── results/
+        ├── figures/
+        ├── results/
+        └── results_03/
 ```
 
 ## Installation and execution
 
-The scripts use Python with **NumPy**, **Matplotlib**, **Numba** and **tqdm**. From the repository root, install the dependencies:
+The scripts use Python with **NumPy**, **Matplotlib**, **Numba**, **tqdm** and **pandas**. From the repository root, install the dependencies:
 
 ```bash
 python -m pip install -r requirements.txt
@@ -112,6 +129,18 @@ python exercises/03-randomized-perceptron-learning/plot_noise_sweep.py
 
 This command reads existing results; it does not run the variance-sweep simulations.
 
+### Exercise 04
+
+```bash
+python exercises/04-annealed-solution/annealed_solution.py
+```
+
+**The current defaults generate only the final comparison plot**, using the previously saved automatic-procedure results and the numerical data from Exercise 03. They do not rerun the convergence analysis.
+
+The configuration switches in `annealed_solution.py` allow the parametric curve, fixed-point convergence plots, parameter sweep, convergence summaries, heatmaps and automatic procedure to be generated separately.
+
+The [Exercise 04 README](exercises/04-annealed-solution/README.md) documents the execution modes, required intermediate files and numerical settings.
+
 ## Outputs and reproducibility
 
 | Exercise | Numerical output | Figures |
@@ -119,12 +148,15 @@ This command reads existing results; it does not run the variance-sweep simulati
 | 01 | [`simulation_results.txt`](exercises/01-polynomial-regression/simulation_results.txt) | [`figures/`](exercises/01-polynomial-regression/figures/) |
 | 02 | Error rates printed in the terminal | [`figures/`](exercises/02-binary-comparison-perceptron/figures/) |
 | 03 | Text tables in [`results/`](exercises/03-randomized-perceptron-learning/results/) | Saved in the same `results/` directory |
+| 04 | CSV tables in [`results/`](exercises/04-annealed-solution/results/) | [`figures/`](exercises/04-annealed-solution/figures/) |
+
+Exercise 04 also includes a `results_03/` directory containing copies of the saved numerical results from Exercise 03, used for the final comparison.
 
 Outputs are written relative to each script's location. Rerunning an experiment can overwrite files with matching names.
 
 Exercises 01 and 02 display figures sequentially when run normally from a terminal with a graphical Matplotlib backend; close each figure window to continue. The main script for Exercise 03 displays its figures together when `PLOT_RESULTS = True`. For unattended plotting, set the `MPLBACKEND` environment variable to `Agg`.
 
-The scripts set fixed random seeds. The individual READMEs document the seeds, simulation settings, saved outputs and any configuration changes needed to reproduce the experiments.
+The simulation scripts for Exercises 01–03 set fixed random seeds. Exercise 04 uses deterministic numerical procedures and previously saved simulation results. The individual READMEs document the relevant settings, numerical parameters, saved outputs and any configuration changes needed to reproduce the experiments.
 
 ## Academic attribution
 
