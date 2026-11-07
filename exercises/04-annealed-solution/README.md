@@ -156,7 +156,7 @@ The [report](report.pdf) accompanies the numerical analysis. Full sweep results 
 From the repository root, install the dependencies and run:
 
 ```bash
-python -m pip install -r requirements.txt pandas
+python -m pip install -r requirements.txt
 python exercises/04-annealed-solution/annealed_solution.py
 ```
 
